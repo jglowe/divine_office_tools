@@ -24,29 +24,36 @@
 <div class="container">
 
 <form>
-    <div class="mb-3">
-        <label for="cleff" class="form-label">Cleff</label>
-        <input type="text" class="form-control" id="cleff" value="c4">
-    </div>
-    <div class="mb-3">
+
+<div class="container">
+
+<div class="row">
+    <div class="col">
+        <div class="mb-3">
+            <label for="cleff" class="form-label">Cleff</label>
+            <input type="text" class="form-control" id="cleff" value="c4">
+        </div>
         <div class="mb-3">
             <label for="tune" class="form-label">Tune</label>
             <p>The neumes for each syllable should be in a singular space/newline
             separated list. The Amen should be separated by two new lines.</p>
-            <textarea class="form-control" id="tune" rows="4">
+            <textarea class="form-control" id="tune" rows="5">
 h j j j j k j i ,
 h h h h h i h g. ;
 i i h g f g h h ,
 h j j i h i h g. ::
 
-ghg fg..</textarea>
+ghg fg.. ::</textarea>
         </div>
     </div>
-    <div class="mb-3">
+
+    <div class="col">
         <div class="mb-3">
             <label for="hymn" class="form-label">Hymn Text</label>
-            <p></p>
-            <textarea class="form-control" id="hymn" rows="7">
+            <p>Hymn text with verses separated by two new lines and syllables
+            separated with the = delimiter. The Amen should be put at the end if
+            used.</p>
+            <textarea class="form-control" id="hymn" rows="9">
 Te lu=cis an=te ter=mi=num,
 Re=rum Cre=a=tor pos=cim=us,
 Ut sol=i=ta clem=en=ti=a
@@ -65,13 +72,27 @@ Regn=at cum Sanc=to Spir=i=tu.
 A=men.</textarea>
         </div>
     </div>
-    <button type="button" id="generate_gabc" class="btn btn-primary">Generate gabc</button>
-    <div class="mb-3">
+</div>
+
+<div class="row">
+    <div class="col">
+        <button type="button" id="generate_gabc" class="btn btn-primary">Generate gabc</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
         <div class="mb-3">
-            <label for="gabc" class="form-label">gabc</label>
-            <textarea class="form-control" id="gabc" rows="5"></textarea>
+            <div class="mb-3">
+                <label for="gabc" class="form-label">gabc</label>
+                <textarea class="form-control" id="gabc" rows="5"></textarea>
+            </div>
         </div>
     </div>
+</div>
+
+</div>
+
 </form>
 
 <script src="./main.js"></script>
