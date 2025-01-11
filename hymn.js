@@ -81,11 +81,12 @@ generate_gabc_button.addEventListener("click", function() {
         }
 
         var tune_index = 0;
-
+        var space_before_word = false;
         for (const [i, word] of verse.entries()) {
-            if (i !== 0) {
+            if (space_before_word) {
                 gabc += " ";
             }
+            space_before_word = true
 
             for (const syllable of word) {
                 gabc += syllable + "(" + tune[tune_index] + ")"
@@ -94,8 +95,9 @@ generate_gabc_button.addEventListener("click", function() {
                                                  tune[tune_index] === ";" ||
                                                  tune[tune_index] === ":" ||
                                                  tune[tune_index] === "::")) {
-                    gabc += " (" + tune[tune_index] + ")";
-                    tune_index += 1
+                    gabc += " (" + tune[tune_index] + ")\n";
+                    tune_index += 1;
+                    space_before_word = false;
                 }
             }
         }
