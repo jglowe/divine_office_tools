@@ -14,6 +14,7 @@ generate_gabc_button.addEventListener("click", function() {
     const tune_box = document.getElementById("tune");
     const hymn_box = document.getElementById("hymn");
     const gabc_box = document.getElementById("gabc");
+    const verse_numbers_checkbox = document.getElementById("verse_numbers");
 
     const cleff = cleff_box.value;
     const unprocessed_tune = tune_box.value;
@@ -62,6 +63,10 @@ generate_gabc_button.addEventListener("click", function() {
             }
 
             continue
+        }
+
+        if (index != 0 && verse_numbers_checkbox.checked) {
+            gabc += index + 1 + ". "
         }
 
         // Count the syllables so we can detect issues upfront
