@@ -10,10 +10,12 @@ const generate_gabc_button = document.getElementById("generate_gabc");
 
 // Execute a function when the user presses a key on the keyboard
 generate_gabc_button.addEventListener("click", function() {
+    const cleff_box = document.getElementById("cleff");
     const tune_box = document.getElementById("tune");
     const hymn_box = document.getElementById("hymn");
     const gabc_box = document.getElementById("gabc");
 
+    const cleff = cleff_box.value;
     const unprocessed_tune = tune_box.value;
     const unprocessed_hymn = hymn_box.value;
 
@@ -34,7 +36,7 @@ generate_gabc_button.addEventListener("click", function() {
     // Count so we can detect issues upfront
     const tune_syllables = tune.filter((n) => n !== ";" && n !== "," && n !== ":" && n !== "::").length;
 
-    var gabc = "(c4)\n";
+    var gabc = "(" + cleff + ")\n";
     for (const [index, verse] of verses.entries()) {
         if (verse.length === 1 && verse[0].length === 2 && verse[0][0] === "A" && verse[0][1] === "men") {
             var tune_index = 0;
