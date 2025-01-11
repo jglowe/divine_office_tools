@@ -20,8 +20,11 @@ generate_gabc_button.addEventListener("click", function() {
     const unprocessed_hymn = hymn_box.value;
 
     const verses = unprocessed_hymn.split(/\n\n/).map(function (verse) {
-        if (verse.trim() === "Amen" || verse.trim() === "A=men") {
-            return [["A", "men"]];
+        if (verse.trim() === "Amen" ||
+            verse.trim() === "A=men" ||
+            verse.trim() === "Amen." ||
+            verse.trim() === "A=men.") {
+            return [["A", "men."]];
         }
         return verse.trim().split(/[\s\n]/).map(function (word) {
             return word.split("=");
@@ -38,7 +41,7 @@ generate_gabc_button.addEventListener("click", function() {
 
     var gabc = "(" + cleff + ")\n";
     for (const [index, verse] of verses.entries()) {
-        if (verse.length === 1 && verse[0].length === 2 && verse[0][0] === "A" && verse[0][1] === "men") {
+        if (verse.length === 1 && verse[0].length === 2 && verse[0][0] === "A" && verse[0][1] === "men.") {
             var tune_index = 0;
             for (const [i, word] of verse.entries()) {
                 if (i !== 0) {
