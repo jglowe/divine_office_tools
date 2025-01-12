@@ -1,7 +1,11 @@
-function add_recitation_note(note, times) {
+function add_recitation_note(note, times, last_note_emphasized) {
     var notes = [];
     for (var i = 0; i < times; i++) {
-        notes.push(note)
+        if (last_note_emphasized && i === times - 1) {
+            notes.push("'" + note);
+        } else {
+            notes.push(note);
+        }
     }
     return notes;
 }
@@ -22,13 +26,13 @@ function get_possible_tune_combinations(index, tune) {
     }
 }
 
-function make_all_possible_tunes(recitation_note, length, end) {
+function make_all_possible_tunes(recitation_note, length, end, last_note_emphasized) {
     const possible_tune_endings = get_possible_tune_combinations(0, end);
 
     var tunes = [];
 
     for (const ending of possible_tune_endings) {
-        tunes.push(add_recitation_note(recitation_note, length - ending.length).concat(ending));
+        tunes.push(add_recitation_note(recitation_note, length - ending.length, last_note_emphasized).concat(ending));
     }
 
     return tunes;
@@ -61,7 +65,7 @@ function join_text_to_tune(text, tune) {
     return gabc;
 }
 
-function get_tune_for_text(incipit, use_incipit, recitation_note, ending, syllable_count, accented_syllables) {
+function get_tune_for_text(incipit, use_incipit, recitation_note, ending, syllable_count, accented_syllables, is_flex) {
     var tunes = [];
     if (incipit !== null && use_incipit) {
         var min_length = ending.filter((neum) => !neum.match(/[r]/)).length;
@@ -71,9 +75,9 @@ function get_tune_for_text(incipit, use_incipit, recitation_note, ending, syllab
         } else if (syllable_count === min_length) {
             return ending.filter((neum) => !neum.match(/[r]/)).slice(-syllable_count);
         } else if (syllable_count < min_length_with_incipit){
-            tunes = make_all_possible_tunes(recitation_note, syllable_count, ending);
+            tunes = make_all_possible_tunes(recitation_note, syllable_count, ending, is_flex);
         } else { // Actually use the incipit this time
-            tunes = make_all_possible_tunes(recitation_note, syllable_count - incipit.length, ending).map((tune) => incipit.concat(tune));
+            tunes = make_all_possible_tunes(recitation_note, syllable_count - incipit.length, ending, is_flex).map((tune) => incipit.concat(tune));
         }
     } else {
         var min_length = ending.filter((neum) => !neum.match(/[r]/)).length;
@@ -82,7 +86,7 @@ function get_tune_for_text(incipit, use_incipit, recitation_note, ending, syllab
         } else if (syllable_count === min_length) {
             return ending.filter((neum) => !neum.match(/[r]/)).slice(-syllable_count);
         } else {
-            tunes = make_all_possible_tunes(recitation_note, syllable_count, ending);
+            tunes = make_all_possible_tunes(recitation_note, syllable_count, ending, is_flex);
         }
     }
 
@@ -171,16 +175,16 @@ generate_gabc_button.addEventListener("click", function() {
         // Flexitor
         if (line[line.length - 1][0] === "†" || line[line.length - 1][0] === "$") {
             const line_without_dagger = line.slice(0, -1);
-            const tune = get_tune_for_text(incipit, use_incipit, first_recitation_note, flex, syllable_count, accented_syllables_in_text);
+            const tune = get_tune_for_text(incipit, use_incipit, first_recitation_note, flex, syllable_count, accented_syllables_in_text, true);
             gabc += join_text_to_tune(line_without_dagger, tune) + "†(,)\n";
         // Mediator
         } else if (line[line.length - 1][0] === "*") {
             const line_without_asterisk = line.slice(0, -1);
-            const tune = get_tune_for_text(incipit, use_incipit, first_recitation_note, mediator, syllable_count, accented_syllables_in_text);
+            const tune = get_tune_for_text(incipit, use_incipit, first_recitation_note, mediator, syllable_count, accented_syllables_in_text, false);
             gabc += join_text_to_tune(line_without_asterisk, tune) + "*(:)\n";
         // Finitor
         } else {
-            const tune = get_tune_for_text(null, false, second_recitation_note, finitor, syllable_count, accented_syllables_in_text);
+            const tune = get_tune_for_text(null, false, second_recitation_note, finitor, syllable_count, accented_syllables_in_text, false);
 
             if (index === psalm.length - 1) {
                 gabc += join_text_to_tune(line, tune) + "(::)";
