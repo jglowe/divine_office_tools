@@ -135,6 +135,10 @@ generate_gabc_button.addEventListener("click", function() {
 
     var gabc = "(" + cleff + ")\n";
     for (const [index, line] of psalm.entries()) {
+        if (line.length === 0 || line[0][0] === "") {
+            continue
+        }
+
         // Count the syllables so we can detect issues upfront
         var syllable_count = 0;
         for (const word of line) {
@@ -168,12 +172,12 @@ generate_gabc_button.addEventListener("click", function() {
         if (line[line.length - 1][0] === "†" || line[line.length - 1][0] === "$") {
             const line_without_dagger = line.slice(0, -1);
             const tune = get_tune_for_text(incipit, use_incipit, first_recitation_note, flex, syllable_count, accented_syllables_in_text);
-            gabc += join_text_to_tune(line_without_dagger, tune) + "†(,)";
+            gabc += join_text_to_tune(line_without_dagger, tune) + "†(,)\n";
         // Mediator
         } else if (line[line.length - 1][0] === "*") {
             const line_without_asterisk = line.slice(0, -1);
             const tune = get_tune_for_text(incipit, use_incipit, first_recitation_note, mediator, syllable_count, accented_syllables_in_text);
-            gabc += join_text_to_tune(line_without_asterisk, tune) + "*(:)";
+            gabc += join_text_to_tune(line_without_asterisk, tune) + "*(:)\n";
         // Finitor
         } else {
             const tune = get_tune_for_text(null, false, second_recitation_note, finitor, syllable_count, accented_syllables_in_text);
@@ -181,12 +185,8 @@ generate_gabc_button.addEventListener("click", function() {
             if (index === psalm.length - 1) {
                 gabc += join_text_to_tune(line, tune) + "(::)";
             } else {
-                gabc += join_text_to_tune(line, tune) + "(:)";
+                gabc += join_text_to_tune(line, tune) + "(:)\n";
             }
-        }
-
-        if (index !== psalm.length - 1) {
-            gabc += "\n";
         }
     }
 
