@@ -1,3 +1,5 @@
+
+
 function add_recitation_note(note, times, last_note_emphasized) {
     var notes = [];
     for (var i = 0; i < times; i++) {
@@ -195,4 +197,16 @@ generate_gabc_button.addEventListener("click", function() {
     }
 
     gabc_box.value = gabc;
+
+    var ctxt = new exsurge.ChantContext();
+    var mappings = exsurge.Gabc.createMappingsFromSource(ctxt, gabc);
+    var score = new exsurge.ChantScore(ctxt, mappings, true);
+    var width = document.getElementById("chant_preview").offsetWidth;
+
+    // perform layout on the chant
+    score.performLayoutAsync(ctxt, function() {
+      score.layoutChantLines(ctxt, width, function() {
+        document.getElementById("chant_preview").innerHTML = score.createSvg(ctxt);
+      });
+    });
 });
