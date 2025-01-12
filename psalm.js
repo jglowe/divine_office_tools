@@ -168,7 +168,7 @@ generate_gabc_button.addEventListener("click", function() {
         if (line[line.length - 1][0] === "†" || line[line.length - 1][0] === "$") {
             const line_without_dagger = line.slice(0, -1);
             const tune = get_tune_for_text(incipit, use_incipit, first_recitation_note, flex, syllable_count, accented_syllables_in_text);
-            gabc += join_text_to_tune(line_without_dagger, tune) + "†(;)";
+            gabc += join_text_to_tune(line_without_dagger, tune) + "†(,)";
         // Mediator
         } else if (line[line.length - 1][0] === "*") {
             const line_without_asterisk = line.slice(0, -1);
@@ -178,10 +178,16 @@ generate_gabc_button.addEventListener("click", function() {
         } else {
             const tune = get_tune_for_text(null, false, second_recitation_note, finitor, syllable_count, accented_syllables_in_text);
 
-            gabc += join_text_to_tune(line, tune) + "(:)";
+            if (index === psalm.length - 1) {
+                gabc += join_text_to_tune(line, tune) + "(::)";
+            } else {
+                gabc += join_text_to_tune(line, tune) + "(:)";
+            }
         }
 
-        gabc += "\n";
+        if (index !== psalm.length - 1) {
+            gabc += "\n";
+        }
     }
 
     gabc_box.value = gabc;
