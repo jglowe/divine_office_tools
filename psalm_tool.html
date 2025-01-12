@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en-us" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<header class="p-3 mb-3 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="./index.html" class="nav-link px-2 link-dark">Hymn Tool</a></li>
+                <li><a href="./psalm_tool.html" class="nav-link px-2 link-dark">Psalm Tool</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<main>
+
+<div class="container">
+
+<form>
+
+<div class="container">
+
+<div class="row">
+    <div class="col">
+        <div class="mb-3">
+            <label for="cleff" class="form-label">Cleff</label>
+            <input type="text" class="form-control" id="cleff" value="c4">
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="incipit" class="form-label">Incipit</label>
+                <input type="text" class="form-control" id="incipit" value="g h">
+            </div>
+            <div class="col">
+                <label for="first_recitation_note" class="form-label">First Recitation Note</label>
+                <input type="text" class="form-control" id="first_recitation_note" value="j">
+            </div>
+            <div class="col">
+                <label for="flex" class="form-label">Flex</label>
+                <input type="text" class="form-control" id="flex" value="hr h.">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="mediator" class="form-label">Mediator</label>
+                <input type="text" class="form-control" id="mediator" value="'k jr j.">
+            </div>
+            <div class="col">
+                <label for="second_recitation_note" class="form-label">Second Recitation Note</label>
+                <input type="text" class="form-control" id="second_recitation_note" value="j">
+            </div>
+            <div class="col">
+                <label for="finitor" class="form-label">Finitor</label>
+                <input type="text" class="form-control" id="finitor" value="h j 'k jr j.">
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="mb-3">
+            <label for="psalm" class="form-label">Psalm Text</label>
+            <textarea class="form-control" id="psalm" rows="9">
+Be=á=tus vir, qui non á=biit in con=sí=li=o imp=i=ó=rum, $
+et in via pec=ca=tór=um non ste=tit, *
+et in cáth=e=dra pes=til=én=ti=æ non sed=it:
+Sed in le=ge Dó=mi=ni vol=ún=tas e=jus, *
+et in le=ge e=jus med=i=tá=bi=tur di=e ac noc=te.
+Et er=it tam=quam lig=num, quod plan=tá=tum est sec=us de=cúr=sus a=quá=rum, *
+quod fruc=tum su=um da=bit in tém=pore su=o:
+Et fó=li=um e=jus non dé=flu=et: *
+et óm=nia quæ=cúm=que fá=ci=et, pros=per=a=bún=tur.
+Non sic ímp=i=i, non sic: *
+sed tam=quam pul=vis, quem pró=jic=it ven=tus a fá=ci=e terr=æ.
+Id=eo non re=súr=gent ímp=i=i in ju=dí=cio: *
+ne=que pec=ca=tór=es in con=cí=li=o jus=tór=um.
+Quón=i=am no=vit Dó=mi=nus vi=am jus=tór=um: *
+et it=er im=pi=ó=rum pe=rí=bit.
+Gló=ri=a Pa=tri, et Fí=li=o, *
+et Spi=rí=tu=i Sanc=to.
+Si=cut er=at in prin=cí=pi=o, et nunc, et sem=per, *
+et in sǽ=cul=a sæ=cul=ó=rum. A=men.</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <button type="button" id="generate_gabc" class="btn btn-primary">Generate gabc</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="mb-3">
+            <div class="mb-3">
+                <label for="gabc" class="form-label">gabc</label>
+                <textarea class="form-control" id="gabc" rows="5"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+</form>
+
+<script src="./psalm.js"></script>
+
+</body>
+
+</div>
+
+</main>
+
+</html>

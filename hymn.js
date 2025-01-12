@@ -1,11 +1,3 @@
-function arraysAreEqual(arr1, arr2) {
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-
-    return arr1.every((value, index) => value === arr2[index]);
-}
-
 const generate_gabc_button = document.getElementById("generate_gabc");
 
 // Execute a function when the user presses a key on the keyboard
