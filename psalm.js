@@ -1,6 +1,6 @@
-var modes = new Map();
+var tones = new Map();
 
-modes.set("I", new Map([
+tones.set("I", new Map([
     ["cleff", "c4"],
     ["incipit", "f gh"],
     ["first_tenor", "h"],
@@ -23,7 +23,170 @@ modes.set("I", new Map([
     ])]
 ]));
 
+tones.set("II", new Map([
+    ["cleff", "f3"],
+    ["incipit", "e f"],
+    ["first_tenor", "h"],
+    ["flex", "fr f."],
+    ["mediatur", new Map([
+        ["not_solemn", "'i hr h."],
+        ["solemn", "hg hi i 'hi hr h."]
+    ])],
+    ["second_tenor", "h"],
+    ["finitur", new Map([
+        ["d", "g er 'ef f."],
+    ])]
+]));
 
+tones.set("III", new Map([
+    ["cleff", "c4"],
+    ["incipit", "g hj"],
+    ["first_tenor", "j"],
+    ["flex", "hr h."],
+    ["mediatur", new Map([
+        ["not_solemn", "'k jr j jr 'ih j."],
+        ["solemn", "'jk jr j jr 'ih hj.."]
+    ])],
+    ["second_tenor", "j"],
+    ["finitur", new Map([
+        ["a", "h 'j jr ih.."],
+        ["a2", "ji hi 'h gr gh.."],
+        ["b", "h 'j jr i."],
+        ["g", "ji hi 'h gr g."],
+        ["g2", "h j i 'h gr g."],
+    ])]
+]));
+
+tones.set("III_antiphonale_romanum", new Map([
+    ["cleff", "c4"],
+    ["incipit", "g hi"],
+    ["first_tenor", "i"],
+    ["flex", "hr h."],
+    ["mediatur", new Map([
+        ["not_solemn", "'k jr j jr 'ih j."],
+        ["solemn", ""]
+    ])],
+    ["second_tenor", "i"],
+    ["finitur", new Map([
+        ["a", "'j hr h 'j jr ih.."],
+        ["a2", "'j hr hi 'h gr gh.."],
+        ["b", "'j hr h 'j jr i."],
+        ["g", "'j hr hi 'h gr g."],
+    ])]
+]));
+
+tones.set("IV", new Map([
+    ["cleff", "c4"],
+    ["incipit", "h gh"],
+    ["first_tenor", "h"],
+    ["flex", "gr g."],
+    ["mediatur", new Map([
+        ["not_solemn", "g h 'i hr h."],
+        ["solemn", ""]
+    ])],
+    ["second_tenor", "h"],
+    ["finitur", new Map([
+        ["a", "g h i 'g hr h."],
+        ["g", "'h gr g."],
+        ["e", "g h ih gr 'gf e."],
+    ])]
+]));
+
+tones.set("V", new Map([
+    ["cleff", "c3"],
+    ["incipit", "d f"],
+    ["first_tenor", "h"],
+    ["flex", "fr f."],
+    ["mediatur", new Map([
+        ["not_solemn", "'i hr h."],
+        ["solemn", ""]
+    ])],
+    ["second_tenor", "h"],
+    ["finitur", new Map([
+        ["a", "'i gr g 'h fr f."],
+    ])]
+]));
+
+tones.set("VI", new Map([
+    ["cleff", "c4"],
+    ["incipit", "f gh"],
+    ["first_tenor", "h"],
+    ["flex", "gr g."],
+    ["mediatur", new Map([
+        ["not_solemn", "'ixi hr 'g hr h."],
+        ["solemn", ""]
+    ])],
+    ["second_tenor", "h"],
+    ["finitur", new Map([
+        ["f(c)", "f gh 'g fr f."],
+    ])]
+]));
+
+tones.set("VI_antiphonale_romanum_c4", new Map([
+    ["cleff", "c4"],
+    ["incipit", "f gh"],
+    ["first_tenor", "h"],
+    ["flex", "gr g."],
+    ["mediatur", new Map([
+        ["not_solemn", "g 'h fr f."],
+        ["solemn", ""]
+    ])],
+    ["second_tenor", "h"],
+    ["finitur", new Map([
+        ["f(c)", "f gh 'g fr f."],
+    ])]
+]));
+
+tones.set("VI_antiphonale_romanum_c2", new Map([
+    ["cleff", "c2"],
+    ["incipit", "f gh"],
+    ["first_tenor", "h"],
+    ["flex", "gr g."],
+    ["mediatur", new Map([
+        ["not_solemn", "g 'h fr f."],
+        ["solemn", ""]
+    ])],
+    ["second_tenor", "h"],
+    ["finitur", new Map([
+        ["f(c)", "f gh 'g fr f."],
+    ])]
+]));
+
+tones.set("VII", new Map([
+    ["cleff", "c3"],
+    ["incipit", "hg hi"],
+    ["first_tenor", "i"],
+    ["flex", "hr h."],
+    ["mediatur", new Map([
+        ["not_solemn", "'k jr j 'i jr j."],
+        ["solemn", ""]
+    ])],
+    ["second_tenor", "i"],
+    ["finitur", new Map([
+        ["a", "'j ir i 'h hr gf.."],
+        ["b", "'j ir i 'h hr g."],
+        ["c", "'j ir i 'h hr gh.."],
+        ["c2", "'j ir i 'h hr ih.."],
+        ["d", "'j ir i 'h hr gi.."],
+    ])]
+]));
+
+tones.set("VIII", new Map([
+    ["cleff", "c4"],
+    ["incipit", "g h "],
+    ["first_tenor", "j"],
+    ["flex", "hr h."],
+    ["mediatur", new Map([
+        ["not_solemn", "'k jr j."],
+        ["solemn", ""]
+    ])],
+    ["second_tenor", "j"],
+    ["finitur", new Map([
+        ["c", "h j 'k jr j."],
+        ["g", "i j 'h gr g."],
+        ["g2", "i j 'h gr ghg."],
+    ])]
+]));
 
 function add_recitation_note(note, times, last_note_emphasized) {
     var notes = [];
@@ -49,7 +212,7 @@ function get_possible_tune_combinations(index, tune) {
         if (tune[index + 1] !== null && tune[index + 1].match(/[']/)) {
             var tune_with_note_accented = [...tune];
             tune_with_note_accented[index] = "'" + tune_with_note_accented[index];
-            tune_with_note_accented[index + 1] = tune_with_note_accented[index + 1].replace("'", "");
+            tune_with_note_accented[index + 1] = tune_with_note_accented[index + 1].replaceAll(/[']/g, "");
             return get_possible_tune_combinations(index, tune_without_note)
                        .concat(get_possible_tune_combinations(index + 1, tune_with_note))
                        .concat(get_possible_tune_combinations(index + 1, tune_with_note_accented));
@@ -92,7 +255,7 @@ function join_text_to_tune(text, tune) {
     var tune_index = 0;
     for (const word of text) {
         for (const syllable of word) {
-            gabc += syllable + "(" + tune[tune_index].replace(/[r']/, "") + ")";
+            gabc += syllable + "(" + tune[tune_index].replaceAll(/[r']/g, "") + ")";
             tune_index += 1;
         }
         gabc += " ";
@@ -257,7 +420,7 @@ function update_tone_boxes() {
     const second_tenor_box = document.getElementById("second_tenor");
     const finitur_box = document.getElementById("finitur");
 
-    var tone = modes.get(tone_select_box.value);
+    var tone = tones.get(tone_select_box.value);
     cleff_box.value = tone.get("cleff");
     incipit_box.value = tone.get("incipit");
     first_tenor_box.value = tone.get("first_tenor");
@@ -273,7 +436,7 @@ function update_endings_box() {
     ending_select_box.innerHTML = "";
 
     var first = true;
-    for (const key of modes.get(tone_select_box.value).get("finitur").keys()) {
+    for (const key of tones.get(tone_select_box.value).get("finitur").keys()) {
         var new_option = document.createElement("option");
         new_option.value = key;
         new_option.innerHTML = key;
@@ -287,6 +450,26 @@ function update_endings_box() {
     update_tone_boxes();
 }
 
+function populate_tone_selection() {
+    const tone_select_box = document.getElementById("tone");
+
+    if (tone_select_box.innerHTML === "") {
+        var first = true;
+        for (const key of tones.keys()) {
+            var new_option = document.createElement("option");
+            new_option.value = key;
+            new_option.innerHTML = "Tone: " + key;
+            if (first) {
+                new_option.selected = true;
+                first = false;
+            }
+            tone_select_box.appendChild(new_option)
+        }
+    }
+
+    update_endings_box();
+}
+
 const tone_select_box = document.getElementById("tone");
 tone_select_box.addEventListener('change', function() {
     update_endings_box();
@@ -297,4 +480,4 @@ ending_select_box.addEventListener('change', function() {
     update_tone_boxes();
 });
 
-update_endings_box();
+populate_tone_selection();
