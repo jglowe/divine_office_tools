@@ -30,41 +30,59 @@
 <div class="container">
 
 <p> TODOS --- </p>
-<p> Preload the psalm tones and add a selection box for them </p>
+<p> Preload the rest of the psalm tones and add a selection box for them </p>
 <p> Add options to highlight/psalm texts instead of pointing them </p>
 
 <div class="row">
     <div class="col">
+        <div class="row">
+            <div class="col">
+                <select id="tone" class="form-select">
+                    <option value="I" selected>Tone I</option>
+                    <option value="II">Tone II</option>
+                    <option value="III">Tone III</option>
+                    <option value="IV">Tone IV</option>
+                    <option value="V">Tone V</option>
+                    <option value="VI">Tone VI</option>
+                    <option value="VII">Tone VII</option>
+                    <option value="VIII">Tone VIII</option>
+                </select>
+            </div>
+            <div class="col">
+                <select id="ending" class="form-select">
+                </select>
+            </div>
+        </div>
         <div class="mb-3">
             <label for="cleff" class="form-label">Cleff</label>
-            <input type="text" class="form-control" id="cleff" value="c4">
+            <input type="text" class="form-control" id="cleff">
         </div>
         <div class="row">
             <div class="col">
                 <label for="incipit" class="form-label">Incipit</label>
-                <input type="text" class="form-control" id="incipit" value="g h">
+                <input type="text" class="form-control" id="incipit">
             </div>
             <div class="col">
-                <label for="first_recitation_note" class="form-label">First Recitation Note</label>
-                <input type="text" class="form-control" id="first_recitation_note" value="j">
+                <label for="first_tenor" class="form-label">First Tenor</label>
+                <input type="text" class="form-control" id="first_tenor">
             </div>
             <div class="col">
                 <label for="flex" class="form-label">Flex</label>
-                <input type="text" class="form-control" id="flex" value="hr h.">
+                <input type="text" class="form-control" id="flex">
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <label for="mediator" class="form-label">Mediator</label>
-                <input type="text" class="form-control" id="mediator" value="'k jr j.">
+                <label for="mediatur" class="form-label">Mediatur</label>
+                <input type="text" class="form-control" id="mediatur">
             </div>
             <div class="col">
-                <label for="second_recitation_note" class="form-label">Second Recitation Note</label>
-                <input type="text" class="form-control" id="second_recitation_note" value="j">
+                <label for="second_tenor" class="form-label">Second Tenor</label>
+                <input type="text" class="form-control" id="second_tenor">
             </div>
             <div class="col">
-                <label for="finitor" class="form-label">Finitor</label>
-                <input type="text" class="form-control" id="finitor" value="h j 'k jr j.">
+                <label for="finitur" class="form-label">Finitur</label>
+                <input type="text" class="form-control" id="finitur">
             </div>
         </div>
     </div>

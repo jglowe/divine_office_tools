@@ -1,3 +1,28 @@
+var modes = new Map();
+
+modes.set("I", new Map([
+    ["cleff", "c4"],
+    ["incipit", "f gh"],
+    ["first_tenor", "h"],
+    ["flex", "gr g."],
+    ["mediatur", new Map([
+        ["not_solemn", "'ixi hr h 'g hr h."],
+        ["solemn", "hg ixgi h hr 'hg gh.."]
+    ])],
+    ["second_tenor", "h"],
+    ["finitur", new Map([
+        ["a", "g f 'g hr h."],
+        ["a2", "g f 'g gr gh.."],
+        ["d", "g f gr 'gf d."],
+        ["d2", "g f 'g gr gvFED."],
+        ["d3", "g f 'gh gr gvFED."],
+        ["f", "g f 'gh gr gf.."],
+        ["g", "g f 'gh gr g."],
+        ["g2", "g f 'g gr ghg."],
+        ["g3", "g f 'g gr g."],
+    ])]
+]));
+
 
 
 function add_recitation_note(note, times, last_note_emphasized) {
@@ -21,8 +46,16 @@ function get_possible_tune_combinations(index, tune) {
         var tune_without_note = [...tune];
         tune_without_note.splice(index, 1);
         var tune_with_note = [...tune];
-        tune_with_note[index] = tune_with_note[index].replace(/[r]$/, "");
-        return get_possible_tune_combinations(index, tune_without_note).concat(get_possible_tune_combinations(index + 1, tune_with_note));
+        if (tune[index + 1] !== null && tune[index + 1].match(/[']/)) {
+            var tune_with_note_accented = [...tune];
+            tune_with_note_accented[index] = "'" + tune_with_note_accented[index];
+            tune_with_note_accented[index + 1] = tune_with_note_accented[index + 1].replace("'", "");
+            return get_possible_tune_combinations(index, tune_without_note)
+                       .concat(get_possible_tune_combinations(index + 1, tune_with_note))
+                       .concat(get_possible_tune_combinations(index + 1, tune_with_note_accented));
+        } else {
+            return get_possible_tune_combinations(index, tune_without_note).concat(get_possible_tune_combinations(index + 1, tune_with_note));
+        }
     } else {
         return get_possible_tune_combinations(index + 1, tune);
     }
@@ -117,21 +150,21 @@ const generate_gabc_button = document.getElementById("generate_gabc");
 generate_gabc_button.addEventListener("click", function() {
     const cleff_box = document.getElementById("cleff");
     const incipit_box = document.getElementById("incipit");
-    const first_recitation_note_box = document.getElementById("first_recitation_note");
+    const first_tenor_box = document.getElementById("first_tenor");
     const flex_box = document.getElementById("flex");
-    const mediator_box = document.getElementById("mediator");
-    const second_recitation_note_box = document.getElementById("second_recitation_note");
-    const finitor_box = document.getElementById("finitor");
+    const mediatur_box = document.getElementById("mediatur");
+    const second_tenor_box = document.getElementById("second_tenor");
+    const finitur_box = document.getElementById("finitur");
     const gabc_box = document.getElementById("gabc");
     const psalm_box = document.getElementById("psalm");
 
     const cleff = cleff_box.value;
     const incipit = incipit_box.value.split(/[\s]+/);
-    const first_recitation_note = first_recitation_note_box.value;
+    const first_tenor = first_tenor_box.value;
     const flex = flex_box.value.split(/[\s]+/);
-    const mediator = mediator_box.value.split(/[\s]+/);
-    const second_recitation_note = second_recitation_note_box.value;
-    const finitor = finitor_box.value.split(/[\s]+/);
+    const mediatur = mediatur_box.value.split(/[\s]+/);
+    const second_tenor = second_tenor_box.value;
+    const finitur = finitur_box.value.split(/[\s]+/);
 
     const psalm = psalm_box.value.split(/\n/).map(function (verse) {
         return verse.trim().split(/[\s]/).map(function (word) {
@@ -178,16 +211,16 @@ generate_gabc_button.addEventListener("click", function() {
         // Flexitor
         if (line[line.length - 1][0] === "+" || line[line.length - 1][0] === "†" || line[line.length - 1][0] === "$") {
             const line_without_dagger = line.slice(0, -1);
-            const tune = get_tune_for_text(incipit, use_incipit, first_recitation_note, flex, syllable_count, accented_syllables_in_text, true);
+            const tune = get_tune_for_text(incipit, use_incipit, first_tenor, flex, syllable_count, accented_syllables_in_text, true);
             gabc += join_text_to_tune(line_without_dagger, tune) + "†(,)\n";
         // Mediator
         } else if (line[line.length - 1][0] === "*") {
             const line_without_asterisk = line.slice(0, -1);
-            const tune = get_tune_for_text(incipit, use_incipit, first_recitation_note, mediator, syllable_count, accented_syllables_in_text, false);
+            const tune = get_tune_for_text(incipit, use_incipit, first_tenor, mediatur, syllable_count, accented_syllables_in_text, false);
             gabc += join_text_to_tune(line_without_asterisk, tune) + "*(:)\n";
         // Finitor
         } else {
-            const tune = get_tune_for_text(null, false, second_recitation_note, finitor, syllable_count, accented_syllables_in_text, false);
+            const tune = get_tune_for_text(null, false, second_tenor, finitur, syllable_count, accented_syllables_in_text, false);
 
             if (index === psalm.length - 1) {
                 gabc += join_text_to_tune(line, tune) + "(::)";
@@ -211,3 +244,57 @@ generate_gabc_button.addEventListener("click", function() {
       });
     });
 });
+
+function update_tone_boxes() {
+    const tone_select_box = document.getElementById("tone");
+    const ending_select_box = document.getElementById("ending");
+
+    const cleff_box = document.getElementById("cleff");
+    const incipit_box = document.getElementById("incipit");
+    const first_tenor_box = document.getElementById("first_tenor");
+    const flex_box = document.getElementById("flex");
+    const mediatur_box = document.getElementById("mediatur");
+    const second_tenor_box = document.getElementById("second_tenor");
+    const finitur_box = document.getElementById("finitur");
+
+    var tone = modes.get(tone_select_box.value);
+    cleff_box.value = tone.get("cleff");
+    incipit_box.value = tone.get("incipit");
+    first_tenor_box.value = tone.get("first_tenor");
+    second_tenor_box.value = tone.get("second_tenor");
+    flex_box.value = tone.get("flex");
+    mediatur_box.value = tone.get("mediatur").get("not_solemn");
+    finitur_box.value = tone.get("finitur").get(ending_select_box.value);
+}
+
+function update_endings_box() {
+    const tone_select_box = document.getElementById("tone");
+    const ending_select_box = document.getElementById("ending");
+    ending_select_box.innerHTML = "";
+
+    var first = true;
+    for (const key of modes.get(tone_select_box.value).get("finitur").keys()) {
+        var new_option = document.createElement("option");
+        new_option.value = key;
+        new_option.innerHTML = key;
+        if (first) {
+            new_option.selected = true;
+            first = false;
+        }
+        ending_select_box.appendChild(new_option);
+    }
+
+    update_tone_boxes();
+}
+
+const tone_select_box = document.getElementById("tone");
+tone_select_box.addEventListener('change', function() {
+    update_endings_box();
+});
+
+const ending_select_box = document.getElementById("ending");
+ending_select_box.addEventListener('change', function() {
+    update_tone_boxes();
+});
+
+update_endings_box();
