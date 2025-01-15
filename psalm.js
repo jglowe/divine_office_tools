@@ -148,7 +148,8 @@ generate_gabc_button.addEventListener("click", function() {
         // Count the syllables so we can detect issues upfront
         var syllable_count = 0;
         for (const word of line) {
-            if (word[0] !== "†" &&
+            if (word[0] !== "+" &&
+                word[0] !== "†" &&
                 word[0] !== "$" &&
                 word[0] !== "*") {
                 syllable_count += word.length;
@@ -175,7 +176,7 @@ generate_gabc_button.addEventListener("click", function() {
         }
 
         // Flexitor
-        if (line[line.length - 1][0] === "†" || line[line.length - 1][0] === "$") {
+        if (line[line.length - 1][0] === "+" || line[line.length - 1][0] === "†" || line[line.length - 1][0] === "$") {
             const line_without_dagger = line.slice(0, -1);
             const tune = get_tune_for_text(incipit, use_incipit, first_recitation_note, flex, syllable_count, accented_syllables_in_text, true);
             gabc += join_text_to_tune(line_without_dagger, tune) + "†(,)\n";
