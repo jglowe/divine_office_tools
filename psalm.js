@@ -302,17 +302,27 @@ function point_line(text, tune, tenor, is_flex, is_mediatur, is_finitur) {
                     output += "-|-"
                 }
             }
+            var prefix = "";
+            var suffix = "";
             if (tune_index < tune.incipit_length && tune.incipit_used) {
-                output += "<i>" + syllable + "</i>"
-            } else if (tune.tune[tune_index].match(/[']/)) {
-                output += "<strong>" + syllable + "</strong>"
-            } else if (tune.tune[tune_index].replaceAll(/['r._]/g, "").length > 1) {
-                output += "<u>" + syllable + "</u>"
-            } else if (tune.tune[tune_index].match(/[r]/)) {
-                output += "<i>" + syllable + "</i>"
-            } else {
-                output += syllable
+                prefix = prefix + "<i>";
+                suffix = "</i>" + suffix;
             }
+            if (tune.tune[tune_index].match(/[']/)) {
+                prefix = prefix + "<strong>";
+                suffix = "</strong>" + suffix;
+            }
+            // Remove all accents, modifiers, flats, sharps
+            if (tune.tune[tune_index].replaceAll(/['r._]|.x|.#/g, "").length > 1) {
+                prefix = prefix + "<u>";
+                suffix = "</u>" + suffix;
+            }
+            if (tune.tune[tune_index].match(/[r]/)) {
+                prefix = prefix + "<i>";
+                suffix = "</i>" + suffix;
+            }
+            console.log(prefix + suffix);
+            output += prefix + syllable + suffix;
             tune_index += 1;
         }
         output += " ";
