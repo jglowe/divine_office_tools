@@ -224,13 +224,18 @@ function get_possible_tune_combinations(index, tune) {
     }
 }
 
-function make_all_possible_tunes(recitation_note, length, end, last_note_emphasized) {
+function make_all_possible_tunes(tenor_note, length, end, last_note_emphasized) {
     const possible_tune_endings = get_possible_tune_combinations(0, end);
 
     var tunes = [];
 
     for (const ending of possible_tune_endings) {
-        tunes.push(add_recitation_note(recitation_note, length - ending.length, last_note_emphasized).concat(ending));
+        tunes.push({
+            tune: add_recitation_note(tenor_note, length - ending.length, last_note_emphasized).concat(ending),
+            tenor_length: length - ending.length,
+            incipit_used: false,
+            incipit_length: 0,
+        });
     }
 
     return tunes;
@@ -247,7 +252,7 @@ function join_text_to_tune(text, tune) {
         }
     }
 
-    if (syllable_count !== tune.length) {
+    if (syllable_count !== tune.tune.length) {
         new Error("When assenbling text with a tune the syllable counts don't match");
     }
 
@@ -255,12 +260,72 @@ function join_text_to_tune(text, tune) {
     var tune_index = 0;
     for (const word of text) {
         for (const syllable of word) {
-            gabc += syllable + "(" + tune[tune_index].replaceAll(/[r']/g, "") + ")";
+            gabc += syllable + "(" + tune.tune[tune_index].replaceAll(/[r']/g, "") + ")";
             tune_index += 1;
         }
         gabc += " ";
     }
     return gabc;
+}
+
+function point_line(text, tune, tenor, is_flex, is_mediatur, is_finitur) {
+    var syllable_count = 0;
+
+    for (const word of text) {
+        if (word[0] !== "†" &&
+            word[0] !== "$" &&
+            word[0] !== "*") {
+            syllable_count += word.length;
+        }
+    }
+
+    if (syllable_count !== tune.length) {
+        new Error("When assenbling text with a tune the syllable counts don't match");
+    }
+
+    var prefix_length = 0;
+
+    if (tune.incipit_used) {
+        prefix_length = tune.incipit_length + tune.tenor_length;
+    } else {
+        prefix_length = tune.tenor_length;
+    }
+
+    var output = "";
+    var tune_index = 0;
+    for (const word of text) {
+        for (const [word_index, syllable] of word.entries()) {
+            if (prefix_length === tune_index) {
+                if (word_index === 0) {
+                    output += "| "
+                } else {
+                    output += "-|-"
+                }
+            }
+            if (tune_index < tune.incipit_length && tune.incipit_used) {
+                output += "<i>" + syllable + "</i>"
+            } else if (tune.tune[tune_index].match(/[']/)) {
+                output += "<strong>" + syllable + "</strong>"
+            } else if (tune.tune[tune_index].replaceAll(/['r._]/g, "").length > 1) {
+                output += "<u>" + syllable + "</u>"
+            } else if (tune.tune[tune_index].match(/[r]/)) {
+                output += "<i>" + syllable + "</i>"
+            } else {
+                output += syllable
+            }
+            tune_index += 1;
+        }
+        output += " ";
+    }
+
+    if (is_flex) {
+        output += " †";
+    } else if (is_mediatur) {
+        output += " *";
+    }
+
+    output += "<br>"
+    return output;
 }
 
 function get_tune_for_text(incipit, use_incipit, recitation_note, ending, syllable_count, accented_syllables, is_flex) {
@@ -269,20 +334,45 @@ function get_tune_for_text(incipit, use_incipit, recitation_note, ending, syllab
         var min_length = ending.filter((neum) => !neum.match(/[r]/)).length;
         var min_length_with_incipit = min_length + 1 + incipit.length; // One recitation note needed to have incipit
         if (syllable_count < min_length) {
-            return ending.filter((neum) => !neum.match(/[r]/)).slice(-syllable_count);
+            return {
+                tune: ending.filter((neum) => !neum.match(/[r]/)).slice(-syllable_count),
+                tenor_length: 0,
+                incipit_used: false,
+                incipit_length: 0,
+            };
         } else if (syllable_count === min_length) {
-            return ending.filter((neum) => !neum.match(/[r]/)).slice(-syllable_count);
+            return {
+                tune: ending.filter((neum) => !neum.match(/[r]/)).slice(-syllable_count),
+                tenor_length: 0,
+                incipit_used: false,
+                incipit_length: 0,
+            };
         } else if (syllable_count < min_length_with_incipit){
             tunes = make_all_possible_tunes(recitation_note, syllable_count, ending, is_flex);
         } else { // Actually use the incipit this time
-            tunes = make_all_possible_tunes(recitation_note, syllable_count - incipit.length, ending, is_flex).map((tune) => incipit.concat(tune));
+            tunes = make_all_possible_tunes(recitation_note, syllable_count - incipit.length, ending, is_flex);
+            for (var tune of tunes) {
+                tune.tune = incipit.concat(tune.tune);
+                tune.incipit_used = true;
+                tune.incipit_length = incipit.length;
+            }
         }
     } else {
         var min_length = ending.filter((neum) => !neum.match(/[r]/)).length;
         if (syllable_count < min_length) {
-            return ending.filter((neum) => !neum.match(/[r]/)).slice(-syllable_count);
+            return {
+                tune: ending.filter((neum) => !neum.match(/[r]/)).slice(-syllable_count),
+                tenor_length: 0,
+                incipit_used: false,
+                incipit_length: 0,
+            };
         } else if (syllable_count === min_length) {
-            return ending.filter((neum) => !neum.match(/[r]/)).slice(-syllable_count);
+            return {
+                tune: ending.filter((neum) => !neum.match(/[r]/)).slice(-syllable_count),
+                tenor_length: 0,
+                incipit_used: false,
+                incipit_length: 0,
+            };
         } else {
             tunes = make_all_possible_tunes(recitation_note, syllable_count, ending, is_flex);
         }
@@ -292,7 +382,8 @@ function get_tune_for_text(incipit, use_incipit, recitation_note, ending, syllab
     var best_lined_up_syllables = 0;
     for (const [i, tune] of tunes.entries()) {
         var lined_up_accented_syllables = 0;
-        for (const [j, neum] of tune.entries()) {
+        console.log(tune);
+        for (const [j, neum] of tune.tune.entries()) {
             if (neum.match(/[']/) && accented_syllables.includes(j)) {
                 lined_up_accented_syllables += 1;
             }
@@ -320,6 +411,7 @@ generate_gabc_button.addEventListener("click", function() {
     const finitur_box = document.getElementById("finitur");
     const gabc_box = document.getElementById("gabc");
     const psalm_box = document.getElementById("psalm");
+    const pointed_text_div = document.getElementById("pointed_chant");
 
     const cleff = cleff_box.value;
     const incipit = incipit_box.value.split(/[\s]+/);
@@ -335,9 +427,11 @@ generate_gabc_button.addEventListener("click", function() {
         });
     });
 
+    var pointed_text = "<p>";
     var gabc = "(" + cleff + ")\n";
     for (const [index, line] of psalm.entries()) {
         if (line.length === 0 || line[0][0] === "") {
+            pointed_text += "<br>"
             continue
         }
 
@@ -375,15 +469,18 @@ generate_gabc_button.addEventListener("click", function() {
         if (line[line.length - 1][0] === "+" || line[line.length - 1][0] === "†" || line[line.length - 1][0] === "$") {
             const line_without_dagger = line.slice(0, -1);
             const tune = get_tune_for_text(incipit, use_incipit, first_tenor, flex, syllable_count, accented_syllables_in_text, true);
+            pointed_text += point_line(line_without_dagger, tune, first_tenor, true, false, false);
             gabc += join_text_to_tune(line_without_dagger, tune) + "†(,)\n";
         // Mediator
         } else if (line[line.length - 1][0] === "*") {
             const line_without_asterisk = line.slice(0, -1);
             const tune = get_tune_for_text(incipit, use_incipit, first_tenor, mediatur, syllable_count, accented_syllables_in_text, false);
+            pointed_text += point_line(line_without_asterisk, tune, first_tenor, false, true, false);
             gabc += join_text_to_tune(line_without_asterisk, tune) + "*(:)\n";
         // Finitor
         } else {
             const tune = get_tune_for_text(null, false, second_tenor, finitur, syllable_count, accented_syllables_in_text, false);
+            pointed_text += point_line(line, tune, second_tenor, false, false, true);
 
             if (index === psalm.length - 1) {
                 gabc += join_text_to_tune(line, tune) + "(::)";
@@ -393,7 +490,10 @@ generate_gabc_button.addEventListener("click", function() {
         }
     }
 
+    pointed_text += "</p>"
+
     gabc_box.value = gabc;
+    pointed_text_div.innerHTML = pointed_text;
 
     var ctxt = new exsurge.ChantContext();
     var mappings = exsurge.Gabc.createMappingsFromSource(ctxt, gabc);
