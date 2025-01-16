@@ -113,7 +113,7 @@ tones.set("VI", new Map([
     ["first_tenor", "h"],
     ["flex", "gr g."],
     ["mediatur", new Map([
-        ["not_solemn", "'ixi hr 'g hr h."],
+        ["not_solemn", "'ixi hr h 'g hr h."],
         ["solemn", ""]
     ])],
     ["second_tenor", "h"],
