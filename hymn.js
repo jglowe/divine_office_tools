@@ -19,7 +19,7 @@ generate_gabc_button.addEventListener("click", function() {
             verse.trim() === "A=men.") {
             return [["A", "men."]];
         }
-        return verse.trim().split(/[\s\n]/).map(function (word) {
+        return verse.trim().split(/[\s\n]+/).map(function (word) {
             return word.split("=");
         });
     });
